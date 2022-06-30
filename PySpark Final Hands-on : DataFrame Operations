@@ -1,0 +1,25 @@
+import pyspark
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, lit
+from pyspark.sql.types import StructType, StructField, StringType,IntegerType
+spark = SparkSession.builder.appName('Test').getOrCreate()
+
+columns = ["ID", "Name","Age","Area of Interest"]
+data = [("1","Jack", 22,"Data Science"), ("2","Luke", 21,"Data Analytics"), ("3","Leo", 24,"Micro Services"), ("4","Mark", 21,"Data Analytics")]
+
+df = spark.createDataFrame(data=data,schema=columns)
+
+#df.show()
+
+df2 = df.describe('Age')
+#df2.show()
+
+df2.coalesce(1).write.parquet('Age')
+
+df3 = df.select(['ID', 'Name', 'Age'])
+#df3.show()
+
+df4 = df3.sort(col("Name").desc())
+#df4.show()
+
+df4.coalesce(1).write.parquet('NameSorted')
